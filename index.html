@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlindMaze</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- music background -->
+    <audio id="background-music" loop>
+        <source src="/asset/infinity-games---maze-path-of-light.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Welcome Screen -->
+    <section id="title-screen" class="screen active">
+        <div class="container">
+            <h1 class="game-title">BLIND<span>MAZE</span></h1>
+            <div class="welcome-content">
+                <div class="input-group">
+                    <label for="username">Enter Your Name</label>
+                    <input type="text" id="username" placeholder="Name" maxlength="15">
+                </div>
+                
+                <div class="button-group">
+                    <button id="play-btn" class="btn btn-primary" disabled>Play Game</button>
+                    <button id="instructions-btn" class="btn btn-secondary">Show Instructions</button>
+                    <button id="leaderboard-btn" class="btn btn-secondary">Leaderboard</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Screen -->
+    <section id="game-screen" class="screen">
+        <div class="container">
+            <header class="game-header">
+                <div class="player-info">
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <span id="player-name-display">Player</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-heart"></i>
+                        <span id="lives">5</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-flag"></i>
+                        <span id="stage">Stage 1</span>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <div class="timer-container">
+                        <div class="timer-label" id="timer-label">Memorizing</div>
+                        <div class="timer" id="timer">10</div>
+                    </div>
+                    <button id="hint-btn" class="btn btn-small" disabled>
+                        <i class="fas fa-lightbulb"></i> Hint (1 left)
+                    </button>
+                </div>
+            </header>
+
+            <main class="game-board-container">
+                <div class="game-board" id="game-board">
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Game Instructions</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="instructions-list">
+                    <div class="instruction-item">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <h3>Memorizing Phase</h3>
+                            <p>You have 10 seconds to memorize the maze layout. Walls are shown during this phase.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-item">
+                        <i class="fas fa-running"></i>
+                        <div>
+                            <h3>Moving Phase</h3>
+                            <p>You have 20 seconds to reach the finish point. Walls become invisible during this phase.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-item">
+                        <i class="fas fa-arrows-alt"></i>
+                        <div>
+                            <h3>Controls</h3>
+                            <p>Use the arrow keys to move your player through the maze.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <h3>Hint</h3>
+                            <p>You have 1 hint per stage. It will reveal the walls for 1 second during the moving phase.</p>
+                        </div>
+                    </div>
+                    <div class="instruction-item">
+                        <i class="fas fa-heart"></i>
+                        <div>
+                            <h3>Lives</h3>
+                            <p>You start with 5 lives. Hitting a wall or running out of time costs 1 life.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Leaderboard</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Stage</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                    </tbody>
+                </table>
+                <p class="empty-leaderboard" id="empty-leaderboard">No scores yet. Be the first to play!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Game Over</h2>
+            </div>
+            <div class="modal-body">
+                <div class="game-over-info">
+                    <div class="info-row">
+                        <span class="info-label">Username:</span>
+                        <span id="go-username">Player</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Stage Reached:</span>
+                        <span id="go-stage">Stage 1</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="save-score-btn" class="btn btn-primary">Save Score</button>
+                    <button id="restart-btn" class="btn btn-secondary">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
