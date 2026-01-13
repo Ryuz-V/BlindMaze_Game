@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <div align="center">
-<img src="asset/Screenshot_2026-01-13_142209-removebg-preview.png" width="300" alt="Blind Maze">
+<img src="asset/Screenshot_2026-01-13_142209-removebg-preview.png" width="350" alt="Blind Maze">
 </div>
 
 <br>
