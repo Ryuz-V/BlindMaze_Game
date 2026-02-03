@@ -31,7 +31,7 @@
 [issues-url]: https://github.com/Ryuz-V/BlindMaze_Game/issues
 
 [license-shield]: https://img.shields.io/github/license/Ryuz-V/BlindMaze_Game.svg?style=for-the-badge
-[license-url]: https://github.com/github.com/Ryuz-V/BlindMaze_Game/blob/master/LICENSE.txt
+[license-url]: https://github.com/Ryuz-V/BlindMaze_Game/blob/main/LICENSE
 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
