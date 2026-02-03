@@ -11,9 +11,14 @@
 
 [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url] [![Unlicense License][license-shield]][license-url]
 
+<p align="center">
+  <a href="https://ryuz-v.github.io/Space/" target="_blank"><strong>Deploy Now</strong></a>
+</p>
 </div>
 
+----
 
+<p></P>
 
 <!-- LINK AND IMAGES -->
 [forks-shield]: https://img.shields.io/github/forks/Ryuz-V/BlindMaze_Game.svg?style=for-the-badge

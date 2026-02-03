@@ -2,12 +2,12 @@
 const gameState = {
     username: '',
     stage: 1,
-    lives: 3, // Kurangi dari 5 jadi 3
+    lives: 3,
     score: 0,
     isPlaying: false,
     isMemorizing: true,
-    memorizingTime: 5, // Kurangi dari 10 jadi 5 detik
-    movingTime: 15,    // Kurangi dari 20 jadi 15 detik
+    memorizingTime: 5,
+    movingTime: 15,
     currentTime: 5,
     timerInterval: null,
     playerPosition: { row: 0, col: 0 },
@@ -17,12 +17,9 @@ const gameState = {
     walls: [],
     hintUsed: false,
     gameOver: false,
-    mazeSize: 12, // Naikkan dari 10 jadi 12
-    wallPercentage: 0.45, // Naikkan dari 30-40% jadi 45%
-    teleporters: [], // Tambah teleporter
-    movingWalls: [], // Tambah dinding bergerak
-    traps: [], // Tambah perangkap
-    moveCount: 0 // Hitung langkah
+    mazeSize: 12,
+    wallPercentage: 0.45,
+    moveCount: 0
 };
 
 // DOM Elements
@@ -146,12 +143,9 @@ function generateMaze() {
     gameBoard.innerHTML = '';
     gameState.maze = [];
     gameState.walls = [];
-    gameState.teleporters = [];
-    gameState.movingWalls = [];
-    gameState.traps = [];
     gameState.moveCount = 0;
     
-  // Buat maze 12x12
+    // Buat maze 12x12
     for (let row = 0; row < gameState.mazeSize; row++) {
         gameState.maze[row] = [];
         for (let col = 0; col < gameState.mazeSize; col++) {
@@ -160,14 +154,11 @@ function generateMaze() {
                 isStart: false,
                 isFinish: false,
                 isPlayer: false,
-                isTeleporter: false,
-                isMovingWall: false,
-                isTrap: false
             };
         }
     }
     
-     // Generate start position - tidak selalu di kolom pertama
+    // Generate start position - tidak selalu di kolom pertama
     const startCol = Math.random() < 0.7 ? 0 : Math.floor(Math.random() * 3);
     const startRow = Math.floor(Math.random() * gameState.mazeSize);
     gameState.startPosition = { row: startRow, col: startCol };
@@ -188,15 +179,6 @@ function generateMaze() {
     const totalCells = gameState.mazeSize * gameState.mazeSize;
     const wallCount = Math.floor(totalCells * gameState.wallPercentage);
     generateValidWalls(startRow, startCol, finishRow, finishCol, wallCount);
-    
-    // Tambah teleporter (2 pasang)
-    generateTeleporters(2);
-
-    // Tambah perangkap (5% dari sel)
-    generateTraps(Math.floor(totalCells * 0.05));
-
-    // Tambah dinding bergerak (3 buah)
-    generateMovingWalls(3);
 
     // Render maze
     renderMaze();
@@ -210,28 +192,36 @@ function generateValidWalls(startRow, startCol, finishRow, finishCol, wallCount)
     // First, ensure a clear path exists (simple algorithm)
     // Create a winding path from start to finish
     let currentRow = startRow;
-    let currentCol = 0;
+    let currentCol = startCol;
     const path = [];
     
-    while (currentCol < 9 || currentRow !== finishRow) {
+    // First move from start column to column 9 (mendekati finish)
+    while (currentCol < 9) {
         path.push({ row: currentRow, col: currentCol });
         
-        // Move toward finish
-        if (currentCol < 9) {
-            // Sometimes move vertically to create a winding path
-            if (Math.random() < 0.3 && currentRow > 0 && currentRow < 9) {
-                currentRow += Math.random() < 0.5 ? 1 : -1;
-            } else {
-                currentCol++;
-            }
+        // Sometimes move vertically to create a winding path
+        if (Math.random() < 0.3 && currentRow > 0 && currentRow < gameState.mazeSize - 1) {
+            currentRow += Math.random() < 0.5 ? 1 : -1;
         } else {
-            // We're in the last column, move vertically to finish row
-            if (currentRow < finishRow) currentRow++;
-            else if (currentRow > finishRow) currentRow--;
+            currentCol++;
         }
     }
     
-    path.push({ row: finishRow, col: 9 });
+    // Then move vertically to finish row
+    while (currentRow !== finishRow) {
+        path.push({ row: currentRow, col: currentCol });
+        if (currentRow < finishRow) currentRow++;
+        else if (currentRow > finishRow) currentRow--;
+    }
+    
+    // Finally move to finish column
+    while (currentCol !== finishCol) {
+        path.push({ row: currentRow, col: currentCol });
+        if (currentCol < finishCol) currentCol++;
+        else if (currentCol > finishCol) currentCol--;
+    }
+    
+    path.push({ row: finishRow, col: finishCol });
     
     // Mark path cells as non-walls in temp maze
     for (const cell of path) {
@@ -239,7 +229,7 @@ function generateValidWalls(startRow, startCol, finishRow, finishCol, wallCount)
     }
     
     // Now add random walls, avoiding the path
-  let wallsAdded = 0;
+    let wallsAdded = 0;
     while (wallsAdded < wallCount) {
         const row = Math.floor(Math.random() * gameState.mazeSize);
         const col = Math.floor(Math.random() * gameState.mazeSize);
@@ -255,66 +245,6 @@ function generateValidWalls(startRow, startCol, finishRow, finishCol, wallCount)
         gameState.walls.push({ row, col });
         wallsAdded++;
     }
-}
-
-// Fungsi untuk teleporter:
-function generateTeleporters(count) {
-    for (let i = 0; i < count; i++) {
-        // Cari dua sel kosong untuk teleporter
-        const tele1 = findEmptyCell();
-        const tele2 = findEmptyCell();
-        
-        if (tele1 && tele2) {
-            gameState.maze[tele1.row][tele1.col].isTeleporter = i + 1;
-            gameState.maze[tele2.row][tele2.col].isTeleporter = i + 1;
-            gameState.teleporters.push({ id: i + 1, pos1: tele1, pos2: tele2 });
-        }
-    }
-}
-
-// Fungsi untuk perangkap:
-function generateTraps(count) {
-    for (let i = 0; i < count; i++) {
-        const trap = findEmptyCell();
-        if (trap) {
-            gameState.maze[trap.row][trap.col].isTrap = true;
-            gameState.traps.push(trap);
-        }
-    }
-}
-
-// Fungsi untuk dinding bergerak:
-function generateMovingWalls(count) {
-    for (let i = 0; i < count; i++) {
-        const movingWall = findEmptyCell();
-        if (movingWall) {
-            gameState.maze[movingWall.row][movingWall.col].isMovingWall = true;
-            gameState.movingWalls.push({
-                position: movingWall,
-                direction: Math.random() < 0.5 ? 'horizontal' : 'vertical',
-                moves: 0
-            });
-        }
-    }
-}
-
-// Fungsi untuk mencari sel kosong:
-function findEmptyCell() {
-    for (let attempt = 0; attempt < 100; attempt++) {
-        const row = Math.floor(Math.random() * gameState.mazeSize);
-        const col = Math.floor(Math.random() * gameState.mazeSize);
-        
-        if (!gameState.maze[row][col].isWall &&
-            !gameState.maze[row][col].isStart &&
-            !gameState.maze[row][col].isFinish &&
-            !gameState.maze[row][col].isPlayer &&
-            !gameState.maze[row][col].isTeleporter &&
-            !gameState.maze[row][col].isTrap &&
-            !gameState.maze[row][col].isMovingWall) {
-            return { row, col };
-        }
-    }
-    return null;
 }
 
 function renderMaze() {
@@ -341,12 +271,6 @@ function renderMaze() {
                 cell.classList.add('player');
             } else if (cellData.isWall && gameState.isMemorizing) {
                 cell.classList.add('wall');
-            } else if (cellData.isTeleporter) {
-                cell.classList.add('teleporter');
-            } else if (cellData.isTrap) {
-                cell.classList.add('trap');
-            } else if (cellData.isMovingWall && gameState.isMemorizing) {
-                cell.classList.add('moving-wall');
             }
             
             gameBoard.appendChild(cell);
@@ -362,6 +286,15 @@ function startTimer() {
         gameState.currentTime--;
         timerDisplay.textContent = gameState.currentTime;
         
+        // Efek visual saat waktu hampir habis
+        if (gameState.currentTime <= 5) {
+            timerDisplay.style.color = '#ff4d6d';
+            timerDisplay.style.animation = 'pulse 0.5s infinite';
+        } else {
+            timerDisplay.style.color = '#fff';
+            timerDisplay.style.animation = 'none';
+        }
+        
         if (gameState.currentTime <= 0) {
             clearInterval(gameState.timerInterval);
             
@@ -371,6 +304,8 @@ function startTimer() {
                 gameState.currentTime = gameState.movingTime;
                 timerLabel.textContent = 'Moving';
                 timerDisplay.textContent = gameState.currentTime;
+                timerDisplay.style.color = '#fff';
+                timerDisplay.style.animation = 'none';
                 hintBtn.disabled = false;
                 
                 // Hide walls
@@ -436,41 +371,9 @@ function handleKeyPress(event) {
     }
 
     // Check if move is valid
-    if (gameState.maze[newRow][newCol].isWall || 
-        gameState.maze[newRow][newCol].isMovingWall) {
+    if (gameState.maze[newRow][newCol].isWall) {
         handleGameLoss('You hit a wall!');
         return;
-    }
-
-     // Cek jika menginjak perangkap
-    if (gameState.maze[newRow][newCol].isTrap) {
-        // Perangkap mengurangi waktu
-        gameState.currentTime = Math.max(gameState.currentTime - 3, 1);
-        timerDisplay.textContent = gameState.currentTime;
-        alert('Trap! -3 seconds');
-        
-        // Hapus perangkap setelah diinjak
-        gameState.maze[newRow][newCol].isTrap = false;
-    }
-    
-    // Cek jika menginjak teleporter
-    if (gameState.maze[newRow][newCol].isTeleporter) {
-        const teleporterId = gameState.maze[newRow][newCol].isTeleporter;
-        
-        // Cari teleporter pasangan
-        for (let row = 0; row < gameState.mazeSize; row++) {
-            for (let col = 0; col < gameState.mazeSize; col++) {
-                if (gameState.maze[row][col].isTeleporter === teleporterId &&
-                    (row !== newRow || col !== newCol)) {
-                    // Teleport player
-                    gameState.maze[gameState.playerPosition.row][gameState.playerPosition.col].isPlayer = false;
-                    newRow = row;
-                    newCol = col;
-                    alert('Teleported!');
-                    break;
-                }
-            }
-        }
     }
     
     // Update player position
@@ -479,128 +382,13 @@ function handleKeyPress(event) {
     gameState.maze[newRow][newCol].isPlayer = true;
     gameState.moveCount++;
     
-    // Pindahkan dinding bergerak setiap 2 langkah
-    if (gameState.moveCount % 2 === 0) {
-        moveMovingWalls();
-    }
-    
- // Check win condition
+    // Check win condition
     if (newRow === gameState.finishPosition.row && newCol === gameState.finishPosition.col) {
         handleStageComplete();
         return;
     }
     
     updateMazeDisplay();
-}
-
-// Fungsi untuk menggerakkan dinding bergerak:
-function moveMovingWalls() {
-    gameState.movingWalls.forEach(wall => {
-        const { row, col } = wall.position;
-        
-        // Hapus dari posisi lama
-        gameState.maze[row][col].isMovingWall = false;
-        
-        // Tentukan posisi baru
-        let newRow = row;
-        let newCol = col;
-        
-        if (wall.direction === 'horizontal') {
-            newCol = (col + (wall.moves % 2 === 0 ? 1 : -1)) % gameState.mazeSize;
-            if (newCol < 0) newCol = gameState.mazeSize - 1;
-        } else {
-            newRow = (row + (wall.moves % 2 === 0 ? 1 : -1)) % gameState.mazeSize;
-            if (newRow < 0) newRow = gameState.mazeSize - 1;
-        }
-        
-        // Jika posisi baru kosong, pindahkan
-        if (!gameState.maze[newRow][newCol].isWall &&
-            !gameState.maze[newRow][newCol].isStart &&
-            !gameState.maze[newRow][newCol].isFinish &&
-            !gameState.maze[newRow][newCol].isPlayer &&
-            !gameState.maze[newRow][newCol].isTeleporter &&
-            !gameState.maze[newRow][newCol].isTrap) {
-            
-            wall.position = { row: newRow, col: newCol };
-            gameState.maze[newRow][newCol].isMovingWall = true;
-        }
-        
-        wall.moves++;
-    });
-}
-
-// Update updateMazeDisplay() untuk elemen baru:
-function updateMazeDisplay() {
-    const cells = document.querySelectorAll('.cell');
-    
-    cells.forEach(cell => {
-        const row = parseInt(cell.dataset.row);
-        const col = parseInt(cell.dataset.col);
-        
-        // Reset classes
-        cell.className = 'cell';
-        
-        const cellData = gameState.maze[row][col];
-        
-        if (cellData.isStart) {
-            cell.classList.add('start');
-        } else if (cellData.isFinish) {
-            cell.classList.add('finish');
-        } else if (cellData.isPlayer) {
-            cell.classList.add('player');
-        } else if (cellData.isWall && gameState.isMemorizing) {
-            cell.classList.add('wall');
-        } else if (cellData.isTeleporter) {
-            cell.classList.add('teleporter');
-        } else if (cellData.isTrap) {
-            cell.classList.add('trap');
-        } else if (cellData.isMovingWall && gameState.isMemorizing) {
-            cell.classList.add('moving-wall');
-        }
-    });
-}
-
-// Modifikasi startTimer() - tambahkan efek teks waktu:
-function startTimer() {
-    clearInterval(gameState.timerInterval);
-    
-    gameState.timerInterval = setInterval(function() {
-        gameState.currentTime--;
-        timerDisplay.textContent = gameState.currentTime;
-        
-        // Efek visual saat waktu hampir habis
-        if (gameState.currentTime <= 5) {
-            timerDisplay.style.color = '#ff4d6d';
-            timerDisplay.style.animation = 'pulse 0.5s infinite';
-        } else {
-            timerDisplay.style.color = '#fff';
-            timerDisplay.style.animation = 'none';
-        }
-        
-        if (gameState.currentTime <= 0) {
-            clearInterval(gameState.timerInterval);
-            
-            if (gameState.isMemorizing) {
-                // Switch to moving phase
-                gameState.isMemorizing = false;
-                gameState.currentTime = gameState.movingTime;
-                timerLabel.textContent = 'Moving';
-                timerDisplay.textContent = gameState.currentTime;
-                timerDisplay.style.color = '#fff';
-                timerDisplay.style.animation = 'none';
-                hintBtn.disabled = false;
-                
-                // Hide walls
-                updateMazeDisplay();
-                
-                // Start moving timer
-                startTimer();
-            } else {
-                // Time's up in moving phase
-                handleGameLoss('Time\'s up!');
-            }
-        }
-    }, 1000);
 }
 
 // Handle stage completion
@@ -611,7 +399,7 @@ function handleStageComplete() {
     const efficiency = Math.floor((gameState.mazeSize * 2) / gameState.moveCount * 100);
     alert(`Stage Complete!\nMoves: ${gameState.moveCount}\nEfficiency: ${efficiency}%`);
     
-    // Naikkan stage (tetap sulit)
+    // Naikkan stage
     gameState.stage++;
     stageDisplay.textContent = `Stage ${gameState.stage}`;
     
@@ -788,11 +576,15 @@ function restartGame() {
 function resetGameState() {
     gameState.username = '';
     gameState.stage = 1;
-    gameState.lives = 5;
+    gameState.lives = 3; // Diubah menjadi 3 sesuai dengan awal game
     gameState.score = 0;
     gameState.isPlaying = false;
     gameState.isMemorizing = true;
-    gameState.currentTime = 10;
+    gameState.memorizingTime = 5;
+    gameState.movingTime = 15;
+    gameState.currentTime = 5;
+    gameState.mazeSize = 12;
+    gameState.wallPercentage = 0.45;
     gameState.playerPosition = { row: 0, col: 0 };
     gameState.startPosition = { row: 0, col: 0 };
     gameState.finishPosition = { row: 0, col: 0 };
@@ -800,6 +592,7 @@ function resetGameState() {
     gameState.walls = [];
     gameState.hintUsed = false;
     gameState.gameOver = false;
+    gameState.moveCount = 0;
     
     // Clear interval if exists
     clearInterval(gameState.timerInterval);

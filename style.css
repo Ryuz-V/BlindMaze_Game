@@ -153,9 +153,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 10px 0;
     border-bottom: 2px solid rgba(0, 180, 216, 0.3);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    transform: translateY(-60px);
 }
 
 .player-info, .game-controls {
@@ -202,25 +203,26 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px;
+    height: 360px; /* Kurangi dari 400px jadi 360px */
 }
+
 
 .game-board {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-    width: 400px;
-    height: 400px;
-    gap: 2px;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    width: 360px; /* Kurangi dari 480px jadi 360px */
+    height: 360px; /* Kurangi dari 480px jadi 360px */
+    gap: 1px;
     background-color: #111;
     border: 3px solid #00b4d8;
     border-radius: 5px;
-    padding: 2px;
+    padding: 1px;
 }
 
 .cell {
     background-color: #222;
-    border-radius: 3px;
+    border-radius: 2px; /* Kurangi border radius */
     transition: all 0.2s ease;
 }
 
@@ -486,35 +488,6 @@ body {
     }
 }
 
-/* Tambahkan di bagian .cell styles */
-.cell.trap {
-    background-color: #ff4d6d;
-    animation: trap-pulse 1s infinite;
-}
-
-.cell.teleporter {
-    background: linear-gradient(45deg, #9d4edd, #560bad);
-    border-radius: 10px;
-    box-shadow: 0 0 10px #9d4edd;
-}
-
-.cell.moving-wall {
-    background-color: #adb5bd;
-    animation: move-effect 2s infinite;
-}
-
-@keyframes trap-pulse {
-    0% { opacity: 0.5; transform: scale(0.95); }
-    50% { opacity: 1; transform: scale(1.05); }
-    100% { opacity: 0.5; transform: scale(0.95); }
-}
-
-@keyframes move-effect {
-    0% { background-color: #adb5bd; }
-    50% { background-color: #6c757d; }
-    100% { background-color: #adb5bd; }
-}
-
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
@@ -565,7 +538,7 @@ body {
 
 /* Perbaikan untuk Instructions Modal yang terlalu besar */
 #instructions-modal .modal-content {
-    max-width: 550px !important; /* Lebih kecil dari modal lain */
+    max-width: 700px !important; /* Lebih kecil dari modal lain */
     max-height: 80vh; /* Maksimal 80% tinggi layar */
     overflow-y: auto; /* Tambahkan scroll jika konten terlalu panjang */
 }
@@ -597,14 +570,15 @@ body {
 }
 
 #instructions-modal .instruction-item i {
-    font-size: 1.3rem; /* Lebih kecil */
-    min-width: 35px; /* Lebih kecil */
-    margin-top: 2px; /* Penyesuaian vertikal */
+    font-size: 1.3rem; 
+    min-width: 35px; 
+    margin-top: 10px; 
+    margin-left: 10px;
 }
 
 #instructions-modal .instruction-item h3 {
-    font-size: 1.1rem; /* Lebih kecil */
-    margin-bottom: 2px; /* Kurangi margin */
+    font-size: 1.1rem; 
+    margin-bottom: 2px; 
 }
 
 #instructions-modal .instruction-item p {
