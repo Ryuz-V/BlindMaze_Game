@@ -32,9 +32,9 @@
 
 BlindMaze is built using standard web technologies:
 
-1.) HTML –> Page structure and game elements
-2.) CSS –> Visual appearance and game styling
-3.) JavaScript –> Game logic, controls, and interactions
+1.HTML –> Page structure and game elements
+2.CSS –> Visual appearance and game styling
+3.JavaScript –> Game logic, controls, and interactions
 
 No external frameworks are used, making the code easy to understand and develop.
 
@@ -61,10 +61,10 @@ You can contribute by:
 
 Steps to contribute:
 
-1.) Fork this repository
-2.) Create a new branch
-3.) Make your changes
-4.) Submit a Pull Request
+1.Fork this repository
+2.Create a new branch
+3.Make your changes
+4.Submit a Pull Request
 
 <h2>License</h2>
 
