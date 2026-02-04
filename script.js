@@ -49,6 +49,56 @@ const emptyLeaderboard = document.getElementById('empty-leaderboard');
 // Close buttons for modals
 const closeButtons = document.querySelectorAll('.close-btn');
 
+// Tambahkan di bagian awal script.js setelah gameState
+const backgroundMusic = document.getElementById('background-music');
+
+// Tambahkan event listener untuk Play button
+playBtn.addEventListener('click', function() {
+    startGame();
+    // Coba mainkan musik setelah user interaction
+    playBackgroundMusic();
+});
+
+// Fungsi untuk memainkan musik
+function playBackgroundMusic() {
+    // Reset musik ke awal
+    backgroundMusic.currentTime = 0;
+    
+    // Coba play
+    const playPromise = backgroundMusic.play();
+    
+    // Handle autoplay restrictions
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Autoplay prevented:", error);
+            // Tampilkan instruksi untuk user
+            alert("Music autoplay was blocked. Click anywhere on the page to enable music, then start the game again.");
+            
+            // Tambahkan event listener untuk interaksi user
+            document.addEventListener('click', enableMusicOnInteraction, { once: true });
+        });
+    }
+}
+
+// Fungsi untuk mengaktifkan musik setelah interaksi
+function enableMusicOnInteraction() {
+    backgroundMusic.play().then(() => {
+        console.log("Music enabled after user interaction");
+    }).catch(error => {
+        console.log("Still cannot play music:", error);
+    });
+}
+
+// Tambahkan juga di startGame function
+function startGame() {
+    if (!gameState.username) return;
+    
+    // Coba mainkan musik lagi
+    playBackgroundMusic();
+    
+    // ... kode yang ada ...
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Username input validation
     usernameInput.addEventListener('input', function() {
