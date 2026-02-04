@@ -12,13 +12,65 @@
 [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url] [![Unlicense License][license-shield]][license-url]
 
 <p align="center">
-  <a href="https://ryuz-v.github.io/Space/" target="_blank"><strong>Deploy Now</strong></a>
+  <a href="https://ryuz-v.github.io/Space/" 
+     target="_blank" 
+     style="background-color: #c30000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+     Deploy Now
+  </a>
 </p>
 </div>
 
 ----
 
-<p></P>
+<img src="/asset/Screenshot 2026-02-04 115555.png" alt="img-web">
+
+<img src="/asset/Screenshot 2026-02-04 115604.png">
+<br>
+<p>BlindMaze is a web based maze game designed for entertainment with a simple yet challenging concept. Players are challenged to navigate a maze with visual limitations, relying on focus, logic, and exploration.</p>
+
+<h2>Technology Used</h2>
+
+BlindMaze is built using standard web technologies:
+1.) HTML –> Page structure and game elements
+2.) CSS –> Visual appearance and game styling
+3.) JavaScript –> Game logic, controls, and interactions
+
+No external frameworks are used, making the code easy to understand and develop.
+
+<h2>Installation</h2>
+
+Clone the repository:
+```bash
+git clone https://github.com/Ryuz-V/BlindMaze_Game.git
+cd blindmaze
+```
+
+open the `index.html` file in your Local Computer
+
+<h2>Contribution</h2>
+
+Contributions are open and welcome to anyone who wants to improve BlindMaze.
+
+You can contribute by:
+
+* Improving gameplay mechanics
+* Enhancing UI/UX
+* Fixing bugs
+* Adding sound effects or new features
+
+Steps to contribute:
+
+1.) Fork this repository
+2.) Create a new branch
+3.) Make your changes
+4.) Submit a Pull Request
+
+<h2>License</h2>
+
+This project is open-source and free to use for learning, modification, and further development.
+
+**BlindMaze** — Simple Maze Game for Fun 🎮
+
 
 <!-- LINK AND IMAGES -->
 [forks-shield]: https://img.shields.io/github/forks/Ryuz-V/BlindMaze_Game.svg?style=for-the-badge
