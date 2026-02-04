@@ -31,6 +31,7 @@
 <h2>Technology Used</h2>
 
 BlindMaze is built using standard web technologies:
+
 1.) HTML –> Page structure and game elements
 2.) CSS –> Visual appearance and game styling
 3.) JavaScript –> Game logic, controls, and interactions
